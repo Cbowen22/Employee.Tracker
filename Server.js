@@ -56,4 +56,85 @@ function mainMenu() {
         }
     })
 }
+function modifyDepartments() {
+
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'modifyDepartments',
+            message: 'What would you like to do?',
+            choices: ['Add Department', 'Edit Department', 'Delete Department', 'Go Back']
+        }
+    ])
+    .then((res) => {
+        switch (res.modifyDepartments) {
+            case 'Add Department':
+                console.log('\n');
+                addDepartment();
+                break;
+            
+            case 'Edit Department':
+                console.log('\n');
+                editDepartment();
+                break;
+            
+            case 'Delete Department':
+                console.log('\n');
+                deleteDepartment();
+                break;
+
+            default:
+                console.log('\n');
+                mainMenu();
+        }
+    })
+}
+
+async function viewDepartments() {
+    const department = new Department();
+    const viewDepartments = await department.viewAll();
+
+    mainMenu();
+}
+
+async function addDepartment() {
+    const department = new Department();
+    const newDepartment = await department.insertNew();
+
+    console.log(`\nSuccessfully added ${newDepartment.name} department!\n`);
+
+    modifyDepartments();
+}
+
+async function editDepartment() {
+    const department = new Department();
+    
+    const viewDepartments = await department.viewAll();
+
+    if(viewDepartments !== 0) {
+        const editDepartment = await department.updateExisting();
+
+        console.log(`\nSuccessfully updated ${editDepartment.departmentName} department!\n`)
+    } else {
+        console.log('Please define at least one department\n')
+    }
+
+    modifyDepartments();
+}
+
+async function deleteDepartment() {
+    const department = new Department();
+    
+    const viewDepartments = await department.viewReadyToDelete();
+    
+    if(viewDepartments !== 0) {
+        const deleteDepartment = await department.deleteExisting();
+
+    } else {
+        console.log('Please define at least one department\n')
+    }
+
+    modifyDepartments();
+}
+
 
